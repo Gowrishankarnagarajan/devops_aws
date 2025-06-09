@@ -1,4 +1,5 @@
 # This workflow sets up a CI/CD pipeline for Terraform on AWS using GitHub Actions.
+
 # It initializes Terraform, plans the infrastructure changes, waits for manual approval,
 name: Terraform AWS CI/CD Pipeline
 # applies the changes, waits for 2 hours, and then destroys the infrastructure.
