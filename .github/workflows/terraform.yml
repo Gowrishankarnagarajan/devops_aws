@@ -1,5 +1,4 @@
 # This workflow sets up a CI/CD pipeline for Terraform on AWS using GitHub Actions.
-
 # It initializes Terraform, plans the infrastructure changes, waits for manual approval,
 name: Terraform AWS CI/CD Pipeline
 # applies the changes, waits for 2 hours, and then destroys the infrastructure.
@@ -25,7 +24,10 @@ jobs:
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
-
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Terraform Init
         run: terraform init
@@ -33,11 +35,7 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      - name: Wait for approval
-        uses: peter-evans/manual-approval@v4
-        with:
-          timeout-minutes: 60
-          approve-label: "approved"
+    # Auto-approval: No manual approval step required, proceeding automatically.
 
       - name: Terraform Apply
         if: ${{ success() }}
@@ -45,7 +43,7 @@ jobs:
 
       - name: Wait 2 hours before destroy
         if: ${{ success() }}
-        run: sleep 7200
+        run: sleep 600
 
       - name: Terraform Destroy
         if: ${{ success() }}
